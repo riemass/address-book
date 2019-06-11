@@ -1,0 +1,16 @@
+[package]
+name = "buttons-attribute"
+version = "0.1.0"
+authors = ["Antoni Boucher <bouanto@zoho.com>"]
+edition = "2018"
+
+[dependencies]
+gtk = "^0.6.0"
+gtk-test = "^0.3"
+relm-attributes = "0.16.0"
+relm= "0.16.0"
+relm-test = "0.16.0"
+relm-derive = "0.16.0"
+
+[features]
+default = ["relm/unstable", "relm-derive/unstable"]
