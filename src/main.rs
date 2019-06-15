@@ -1,40 +1,15 @@
-/*
- * Copyright (c) 2018 Boucher, Antoni <bouanto@zoho.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 extern crate gtk;
-#[macro_use]
 extern crate relm;
-#[macro_use]
-extern crate relm_derive;
-#[macro_use]
-extern crate relm_attributes;
-#[macro_use]
-extern crate gtk_test;
 
 use gtk::Orientation::Vertical;
 use gtk::{ButtonExt, Inhibit, LabelExt, OrientableExt, WidgetExt};
+use relm::connect;
+use relm::connect_stream;
 use relm::{timeout, Relm, Widget};
 use relm_attributes::widget;
+use relm_derive::Msg;
 
-use self::Msg::*;
+mod data_model;
 
 // Define the structure of the model.
 pub struct Model {
@@ -49,6 +24,7 @@ pub enum Msg {
     Quit,
     Show,
 }
+use self::Msg::*;
 
 #[widget]
 impl Widget for Win {
@@ -74,6 +50,11 @@ impl Widget for Win {
                 // Set the orientation property of the Box.
                 orientation: Vertical,
                 // Create a Button inside the Box.
+                #[name="hello"]
+                gtk::Label {
+                    // Bind the text property of the label to the counter attribute of the model.
+                    text: "This is Sparda",
+                },
                 gtk::Button {
                     // Send the message Increment when the button is clicked.
                     clicked => Increment,
@@ -99,26 +80,4 @@ impl Widget for Win {
 
 fn main() {
     Win::run(()).expect("Win::run failed");
-}
-
-#[cfg(test)]
-mod tests {
-    use gtk::LabelExt;
-
-    use gtk_test::click;
-    use relm;
-
-    use Win;
-
-    #[test]
-    fn label_change() {
-        let (_component, widgets) = relm::init_test::<Win>(()).expect("init_test failed");
-        let dec_button = &widgets.dec_button;
-        let label = &widgets.label;
-
-        click(dec_button);
-        assert_text!(label, -1);
-        click(dec_button);
-        assert_text!(label, -2);
-    }
 }
